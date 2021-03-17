@@ -9,7 +9,9 @@ import { DeviceContextProvider } from "./store/DeviceContext.js";
 import theme from "./constants/theme.js";
 import Routes from "./routes.js";
 import { RecoilRoot } from "recoil";
+import Appbar from "./components/layout/AppBar.jsx";
 import "./index.css";
+import "./index.scss";
 
 const App = (props) => {
   return (
@@ -28,6 +30,7 @@ const App = (props) => {
                           animateChildren={false}
                           key="innerView"
                         >
+                          <Appbar />
                           <Routes
                             style={{
                               overflow: "auto",

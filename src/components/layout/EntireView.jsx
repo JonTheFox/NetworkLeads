@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { DeviceContext } from "../../store/DeviceContext";
 import { AppContext } from "../../store/AppContext";
-import AppBar from "../layout/AppBar.jsx";
 
 import clsx from "clsx";
 
@@ -75,7 +74,6 @@ const EntireView = (props) => {
 				return;
 			}}
 		>
-			<AppBar />
 			{children}
 		</div>
 	);

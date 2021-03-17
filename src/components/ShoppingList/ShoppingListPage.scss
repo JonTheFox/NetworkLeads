@@ -1,0 +1,22 @@
+.shopping-list--page {
+	height: 100%;
+	display: flex;
+	flex-flow: column;
+	padding: calc(2 * var(--spacing, 8px));
+
+	.search-bar {
+		padding: calc(2 * var(--spacing, 8px)) var(--spacing, 8px);
+	}
+
+	.items-grid {
+		overflow: auto;
+
+		.MuiCardContent-root {
+			padding-bottom: 0;
+		}
+	}
+
+	.item-card {
+		direction: none;
+	}
+}

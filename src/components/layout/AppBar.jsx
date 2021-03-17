@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useContext,
-  useCallback,
-  useEffect,
-  useRef,
-} from "react";
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 
@@ -17,14 +11,8 @@ import IconButton from "@material-ui/core/IconButton";
 import Home from "@material-ui/icons/Home";
 import Refresh from "@material-ui/icons/Refresh";
 import MenuIcon from "@material-ui/icons/Menu";
-import FilterDrama from "@material-ui/icons/FilterDrama";
 import Chat from "@material-ui/icons/Chat";
 import Close from "@material-ui/icons/Close";
-
-import TextField from "@material-ui/core/TextField";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -36,21 +24,12 @@ import { useTheme } from "@material-ui/styles";
 import { withRouter } from "react-router";
 import { AppContext } from "../../store/AppContext.js";
 import { DeviceContext } from "../../store/DeviceContext.js";
-import { useRecoilState } from "recoil";
 
 import "./_Appbar.scss";
 
 const APP_ROUTE = "/";
 
-const mainLinks = [
-  { title: "Home", path: `${APP_ROUTE}`, Icon: Home },
-  {
-    title: "Classrooms",
-    path: `${APP_ROUTE}client-type-select`,
-    Icon: Chat,
-    adminOnly: false,
-  },
-];
+const mainLinks = [{ title: "Home", path: `${APP_ROUTE}`, Icon: Home }];
 
 const secondaryLinks = [
   {
@@ -66,10 +45,6 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
-    display: "none",
-    [theme.breakpoints.up("sm")]: {
-      display: "block",
-    },
   },
   search: {
     position: "relative",
@@ -155,15 +130,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const renderPrimaryListItemText = (title = "") => (
+const renderListItem = (title = "") => (
   <ListItemText
     primary={title}
-    className={title.length > 7 ? "long-text" : "short-text"}
-  />
-);
-const renderSecondaryListItemText = (title = "") => (
-  <ListItemText
-    secondary={title}
     className={title.length > 7 ? "long-text" : "short-text"}
   />
 );
@@ -182,8 +151,6 @@ const ResponsiveDrawer = (props) => {
   const [appUtils, appState] = useContext(AppContext);
   const { Logger, PromiseKeeper, navigateTo, DURATIONS } = appUtils;
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
   const mediaContext = useContext(DeviceContext);
   const classes = useStyles(mediaContext);
 
@@ -210,14 +177,6 @@ const ResponsiveDrawer = (props) => {
     });
   };
 
-  const handleUserMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleUserMenuClose = () => {
-    setAnchorEl(null);
-  };
-
   useEffect(() => {
     const logger = new Logger({ label });
     logg = logger.logg;
@@ -226,7 +185,7 @@ const ResponsiveDrawer = (props) => {
     return () => {
       window.cancelAnimationFrame(animationFrame);
     };
-  }, []);
+  }, [Logger, PromiseKeeper]);
 
   useEffect(() => {
     const { searchables } = appState;
@@ -257,39 +216,42 @@ const ResponsiveDrawer = (props) => {
     }
   }, [appState, match.path, navigateTo, props.history]);
 
-  const renderMenuList = useCallback((menuItems, secondary = false) => {
-    return menuItems.map(
-      ({ title, path, Icon, adminOnly, callback }, index) => {
-        return (
-          <ListItem
-            button
-            key={title}
-            className={`menu-item menu-item--${path ? path.slice(4) : "basic"}`}
-            onClick={(ev) => {
-              path
-                ? handleLinkClick(`${match.path}${path}`)
-                : callback
-                ? callback(ev)
-                : logg(
-                    `No path or callback function were provided for menu item titled "${title}"`
-                  );
-            }}
-          >
-            <ListItemIcon>
-              <Icon
-                className={`${classes.icon} menu-item--icon ${
-                  secondary ? "secondary" : "primary"
-                }-menu-icon`}
-              />
-            </ListItemIcon>
-            {secondary
-              ? renderSecondaryListItemText(title)
-              : renderPrimaryListItemText(title)}
-          </ListItem>
-        );
-      }
-    );
-  });
+  const renderMenuList = useCallback(
+    (menuItems, secondary = false) => {
+      return menuItems.map(
+        ({ title, path, Icon, adminOnly, callback }, index) => {
+          return (
+            <ListItem
+              button
+              key={title}
+              className={`menu-item menu-item--${
+                path ? path.slice(4) : "basic"
+              }`}
+              onClick={(ev) => {
+                path
+                  ? handleLinkClick(`${match.path}${path}`)
+                  : callback
+                  ? callback(ev)
+                  : logg(
+                      `No path or callback function were provided for menu item titled "${title}"`
+                    );
+              }}
+            >
+              <ListItemIcon>
+                <Icon
+                  className={`${classes.icon} menu-item--icon ${
+                    secondary ? "secondary" : "primary"
+                  }-menu-icon`}
+                />
+              </ListItemIcon>
+              {renderListItem(title)}
+            </ListItem>
+          );
+        }
+      );
+    },
+    [classes.icon, match.path, handleLinkClick]
+  );
 
   const drawer = (
     <div className={"appbar--drawer"}>
@@ -311,15 +273,6 @@ const ResponsiveDrawer = (props) => {
     <div className={clsx("appbar-container unselectable")}>
       <AppBar className={`${classes.appBar} appbar`} elevation={1}>
         <Toolbar className={"appbar--toolbar"}>
-          <IconButton
-            color="inherit"
-            aria-label="Open drawer"
-            onClick={handleDrawerToggle}
-            className={clsx(classes.iconButton, mobileOpen && "menu--open")}
-          >
-            <MenuIcon className={classes.menuButton} />
-          </IconButton>
-
           <Typography
             className={clsx(
               `title nowrap ${classes.appBarText} readable`,
@@ -327,20 +280,10 @@ const ResponsiveDrawer = (props) => {
             )}
             color="inherit"
             noWrap
-            onClick={() => handleLinkClick(`${match.path}${APP_ROUTE}`)}
+            // onClick={() => handleLinkClick(`${match.path}${APP_ROUTE}`)}
           >
-            Weiss English
+            Shopping List
           </Typography>
-
-          <Button
-            className={clsx("login-btn", classes.loginBtn)}
-            color="inherit"
-            variant="outlined"
-            size="small"
-            onClick={() => handleLinkClick(`${match.path}${APP_ROUTE}login`)}
-          >
-            Login
-          </Button>
         </Toolbar>
       </AppBar>
       <nav className={clsx("appbar--nav", classes.drawer)}>
@@ -368,23 +311,16 @@ ResponsiveDrawer.propTypes = {
 
 export default withRouter(ResponsiveDrawer);
 
-/*
- <div className={clsx("settings_bar", classes.settings_bar)}> </div>
- <Avatar
-                alt={user.first_name}
-                src={user.avatar}
-                className={classes.avatar}
-                onClick={() => handleLinkClick("/login")}
-              />
-*/
+/*open menu:
 
-/*
-<InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
+ <IconButton
+            color="inherit"
+            aria-label="Open drawer"
+            onClick={handleDrawerToggle}
+            className={clsx(classes.iconButton, mobileOpen && "menu--open")}
+          >
+            <MenuIcon className={classes.menuButton} />
+          </IconButton>
+
+
 */
