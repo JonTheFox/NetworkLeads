@@ -1,14 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { fade, makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import SearchIcon from "@material-ui/icons/Search";
+import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 
 import CategoryState from "../../store/CategoryState.js";
-import DisplayedItemsState from "../../store/CategoryState.js";
 
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useSetRecoilState } from "recoil";
 import CATEGORIES from "../../mock data/categories.js";
 
 const useStyles = makeStyles((theme) => ({
@@ -49,8 +46,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CategoriesSelect = (props) => {
-	const [category, setCategory] = useRecoilState(CategoryState);
-	const categories = CATEGORIES;
+	const setCategory = useSetRecoilState(CategoryState);
+	const categories = [{ label: "All" }, ...CATEGORIES];
 
 	const styles = useStyles(makeStyles);
 
@@ -70,7 +67,6 @@ const CategoriesSelect = (props) => {
 					/>
 				)}
 				onChange={(_, selectedItem, __) => {
-					debugger;
 					setCategory(selectedItem);
 				}}
 			/>

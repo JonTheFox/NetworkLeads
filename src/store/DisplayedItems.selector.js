@@ -1,6 +1,7 @@
 import { selector } from "recoil";
 import ItemsState from "./ItemsState.js";
 import CategoryState from "./CategoryState.js";
+import SearchState from "./SearchState.js";
 
 const DisplayedItemsState = selector({
 	key: "DisplayedItemsState",
@@ -8,12 +9,21 @@ const DisplayedItemsState = selector({
 	get: ({ get }) => {
 		const allItems = get(ItemsState);
 		const category = get(CategoryState);
+		const searchTerm = get(SearchState);
 
-		const filteredItems = allItems.filter((item, i) => {
-			return category === "all" || item.category === category?.name;
+		const categoryItems = allItems?.filter((item, i) => {
+			return (
+				category?.name === "all" ||
+				category?.label === "All" ||
+				item?.category === category?.name
+			);
 		});
 
-		return filteredItems;
+		const relevantItems = categoryItems?.filter((item) => {
+			return item.name.startsWith(searchTerm);
+		});
+
+		return relevantItems;
 	},
 });
 

@@ -8,7 +8,7 @@ import {
 
 const CategoryState = atom({
 	key: "CategoryState",
-	default: {},
+	default: { name: "" },
 });
 
 export default CategoryState;

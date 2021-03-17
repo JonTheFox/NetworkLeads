@@ -28,7 +28,7 @@ const ShoppingListPage = () => {
 			setItems(items);
 		});
 		fetchCategories().then((categories) => {
-			setCategory("all");
+			setCategory({ name: "all", label: "All" });
 		});
 	}, [fetchItems, fetchCategories]);
 

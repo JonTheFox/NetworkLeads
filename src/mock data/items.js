@@ -75,7 +75,7 @@ const items = [
 		category: "videoGameConsoles",
 	}),
 	new Item({
-		id: 1,
+		id: 7,
 		name: "pencil",
 		label: "Pencil",
 		priceUSD: 900,
