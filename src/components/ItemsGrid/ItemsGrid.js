@@ -16,6 +16,7 @@ import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
 import DisplayedItemsState from "../../store/DisplayedItems.selector.js";
 import SelectedItemState from "../../store/SelectedItemState.js";
+import CartState from "../../store/CartState.js";
 
 import { useRecoilValue, useRecoilState } from "recoil";
 import { DeviceContext } from "../../store/DeviceContext.js";
@@ -27,40 +28,10 @@ const useStyles = makeStyles({
 	},
 });
 
-function ItemCard({ name, label, description, img }) {
-	const classes = useStyles(makeStyles);
-
-	return (
-		<Card className={clsx(classes.root, "item-card")}>
-			<CardActionArea>
-				<CardMedia
-					component="img"
-					alt={label}
-					height="140"
-					image={img}
-					label={label}
-					style={{ paddingBottom: 0 }}
-				/>
-				<CardContent>
-					<Typography gutterBottom variant="h5" component="h2">
-						{label}
-					</Typography>
-					<Typography
-						variant="body2"
-						color="textSecondary"
-						component="p"
-					>
-						{description}
-					</Typography>
-				</CardContent>
-			</CardActionArea>
-		</Card>
-	);
-}
-
 const ItemsGrid = ({ items = [] }) => {
 	const displayedItems = useRecoilValue(DisplayedItemsState);
 	const [selectedItem, setSelectedItem] = useRecoilState(SelectedItemState);
+	const [cart, setCart] = useRecoilState(CartState);
 	const classes = useStyles(makeStyles);
 	const responsiveData = useContext(DeviceContext);
 	const { device } = responsiveData;
@@ -91,6 +62,13 @@ const ItemsGrid = ({ items = [] }) => {
 			break;
 	}
 
+	const handleAddToCart = useCallback(
+		(item) => {
+			setCart((cart) => [...cart, item]);
+		},
+		[setCart]
+	);
+
 	return (
 		<div className="items-grid" style={{ flexGrow: 1 }}>
 			<GridList cellHeight={240} className={classes.gridList} cols={cols}>
@@ -120,41 +98,21 @@ const ItemsGrid = ({ items = [] }) => {
 								className={clsx(classes.root, "item-card")}
 								title={label}
 								actionIcon={
-									<Fragment>
-										<IconButton
-											aria-label={`Info`}
-											className={clsx(
-												"info-btn",
-												classes.icon
-											)}
-										>
-											<InfoIcon />
-										</IconButton>
+									isSelected && (
 										<IconButton
 											aria-label={`Add to card ${label}`}
 											className={clsx(
-												"add-to-card-btn",
+												"add-to-cart-btn",
 												classes.icon
 											)}
 										>
-											<ShoppingCartIcon />
+											<ShoppingCartIcon
+												onClick={() =>
+													handleAddToCart(item)
+												}
+											/>
 										</IconButton>
-										<CardActions>
-											<Button
-												size="small"
-												color="primary"
-											>
-												Add to cart
-											</Button>
-											<Button
-												size="small"
-												color="primary"
-											>
-												Learn more
-											</Button>
-										</CardActions>
-										}
-									</Fragment>
+									)
 								}
 							/>
 						</GridListTile>

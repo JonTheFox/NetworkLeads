@@ -35,6 +35,14 @@
 			// 		opacity: 1;
 			// 	}
 			// }
+
+			.add-to-cart-btn {
+				color: var(--primary);
+				fill: var(--primary) !important;
+				.MuiSvgIcon-root {
+					fill: var(--primary) !important;
+				}
+			}
 		}
 	}
 }
