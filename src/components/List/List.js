@@ -1,12 +1,4 @@
 import React, { useContext, useEffect, useCallback } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
@@ -40,16 +32,16 @@ const List = ({ items = [] }) => {
 	let cols;
 	switch (device) {
 		case "phone":
-			cols = 1;
-			break;
-		case "tablet":
-			cols = 2;
-			break;
-		case "largeScreen":
 			cols = 3;
 			break;
-		case "xlScreen":
+		case "tablet":
+			cols = 3;
+			break;
+		case "largeScreen":
 			cols = 4;
+			break;
+		case "xlScreen":
+			cols = 5;
 			break;
 		default:
 			cols = 2;
@@ -69,7 +61,7 @@ const List = ({ items = [] }) => {
 
 	return (
 		<div className="cart" style={{ flexGrow: 1 }}>
-			<GridList cellHeight={240} className={"grid-list"} cols={cols}>
+			<GridList cellHeight={200} className={"grid-list"} cols={cols}>
 				{cart?.map((item) => {
 					const {
 						id,
