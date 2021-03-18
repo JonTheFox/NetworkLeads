@@ -1,4 +1,4 @@
-import React, { useContext, Fragment, useCallback } from "react";
+import React, { useContext, useEffect, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -66,6 +66,10 @@ const List = ({ items = [] }) => {
 		},
 		[setCart]
 	);
+
+	useEffect(() => {
+		console.log("cart: ", cart);
+	}, [cart]);
 
 	return (
 		<div className="items-grid" style={{ flexGrow: 1 }}>
