@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, Fragment, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
@@ -11,12 +11,15 @@ import clsx from "clsx";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
-import ListSubheader from "@material-ui/core/ListSubheader";
+// import ListSubheader from "@material-ui/core/ListSubheader";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
 import DisplayedItemsState from "../../store/DisplayedItems.selector.js";
-import { useRecoilValue } from "recoil";
+import SelectedItemState from "../../store/SelectedItemState.js";
+
+import { useRecoilValue, useRecoilState } from "recoil";
 import { DeviceContext } from "../../store/DeviceContext.js";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 
 const useStyles = makeStyles({
 	root: {
@@ -51,23 +54,23 @@ function ItemCard({ name, label, description, img }) {
 					</Typography>
 				</CardContent>
 			</CardActionArea>
-			<CardActions>
-				<Button size="small" color="primary">
-					Add to cart
-				</Button>
-				<Button size="small" color="primary">
-					Learn more
-				</Button>
-			</CardActions>
 		</Card>
 	);
 }
 
 const ItemsGrid = ({ items = [] }) => {
 	const displayedItems = useRecoilValue(DisplayedItemsState);
+	const [selectedItem, setSelectedItem] = useRecoilState(SelectedItemState);
 	const classes = useStyles(makeStyles);
 	const responsiveData = useContext(DeviceContext);
 	const { device } = responsiveData;
+
+	const handleItemClick = useCallback(
+		(item) => {
+			setSelectedItem(item);
+		},
+		[setSelectedItem]
+	);
 
 	let cols;
 	switch (device) {
@@ -75,13 +78,13 @@ const ItemsGrid = ({ items = [] }) => {
 			cols = 2;
 			break;
 		case "tablet":
-			cols = 3;
+			cols = 2;
 			break;
 		case "largeScreen":
-			cols = 4;
+			cols = 3;
 			break;
 		case "xlScreen":
-			cols = 5;
+			cols = 4;
 			break;
 		default:
 			//If none of the above is the case..
@@ -94,25 +97,64 @@ const ItemsGrid = ({ items = [] }) => {
 				{displayedItems?.map((item) => {
 					const {
 						id,
-						name,
 						label,
-						//description, priceUSD
+						// name, description, priceUSD
 					} = item;
 
 					const imgUrl = item?.img?.regular;
 
+					const isSelected = item === selectedItem;
+
 					return (
-						<GridListTile key={id}>
+						<GridListTile
+							key={id}
+							className={clsx(
+								"item",
+								isSelected &&
+									"is-selected has-before show-before gradient"
+							)}
+							onClick={() => handleItemClick(item)}
+						>
 							<img src={imgUrl} alt={label} />
 							<GridListTileBar
+								className={clsx(classes.root, "item-card")}
 								title={label}
 								actionIcon={
-									<IconButton
-										aria-label={`info about ${label}`}
-										className={classes.icon}
-									>
-										<InfoIcon />
-									</IconButton>
+									<Fragment>
+										<IconButton
+											aria-label={`Info`}
+											className={clsx(
+												"info-btn",
+												classes.icon
+											)}
+										>
+											<InfoIcon />
+										</IconButton>
+										<IconButton
+											aria-label={`Add to card ${label}`}
+											className={clsx(
+												"add-to-card-btn",
+												classes.icon
+											)}
+										>
+											<ShoppingCartIcon />
+										</IconButton>
+										<CardActions>
+											<Button
+												size="small"
+												color="primary"
+											>
+												Add to cart
+											</Button>
+											<Button
+												size="small"
+												color="primary"
+											>
+												Learn more
+											</Button>
+										</CardActions>
+										}
+									</Fragment>
 								}
 							/>
 						</GridListTile>

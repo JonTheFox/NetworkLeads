@@ -20,7 +20,9 @@ const DisplayedItemsState = selector({
 		});
 
 		const relevantItems = categoryItems?.filter((item) => {
-			return item.name.startsWith(searchTerm);
+			return item.name
+				?.toLowerCase?.()
+				.includes(searchTerm?.toLowerCase());
 		});
 
 		return relevantItems;
