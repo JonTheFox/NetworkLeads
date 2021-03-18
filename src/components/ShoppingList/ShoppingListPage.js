@@ -9,11 +9,11 @@ import CategoryState from "../../store/CategoryState.js";
 import ItemsState from "../../store/ItemsState.js";
 import CATEGORIES from "../../mock data/categories.js";
 import ITEMS from "../../mock data/items.js";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 const ShoppingListPage = () => {
-	const [category, setCategory] = useRecoilState(CategoryState);
-	const [items, setItems] = useRecoilState(ItemsState);
+	const setCategory = useSetRecoilState(CategoryState);
+	const setItems = useSetRecoilState(ItemsState);
 	const fetchItems = useCallback(async () => {
 		return ITEMS;
 	}, []);
